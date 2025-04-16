@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHEAT X - Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#FF5757',
+                            dark: '#FF3131'
+                        },
+                        secondary: '#5D5CDE',
+                        warm: {
+                            100: '#FFF5F0',
+                            200: '#FFE5D9',
+                            300: '#FFD5C2',
+                            400: '#FFC5AB',
+                            500: '#FFB594',
+                            600: '#FF9D73',
+                            700: '#FF8552',
+                        },
+                        dark: {
+                            bg: '#181818',
+                            card: '#252525',
+                            text: '#E5E5E5'
+                        },
+                        light: {
+                            bg: '#FFFAF7',
+                            card: '#FFF5F0',
+                            text: '#333333'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                    }
+                }
+            }
+        }
+
+        // Check for dark mode preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --progress-time: 5s;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .progress-animation {
+            width: 0;
+            animation: progress-forward var(--progress-time) forwards;
+        }
+
+        @keyframes progress-forward {
+            0% { width: 0%; }
+            20% { width: 25%; }
+            50% { width: 60%; }
+            75% { width: 85%; }
+            100% { width: 100%; }
+        }
+
+        .blur-image {
+            filter: blur(12px);
+        }
+
+        .menu-overlay {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .menu-overlay.show {
+            transform: translateX(0);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .dark .glass-effect {
+            background: rgba(37, 37, 37, 0.75);
+        }
+
+        .upload-preview {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-preview.show {
+            opacity: 1;
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #FF5757, #5D5CDE);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .upload-active {
+            border-color: #FF5757;
+            box-shadow: 0 0 0 2px rgba(255, 87, 87, 0.3);
+        }
+
+        .rotating-border::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            z-index: -1;
+            border-radius: inherit;
+            background: linear-gradient(45deg, #FF5757, #5D5CDE, #FF8552, #FF5757);
+            background-size: 300% 300%;
+            animation: rotate-gradient 4s linear infinite;
+        }
+
+        @keyframes rotate-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .fadeIn {
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text transition-colors duration-300">
+    <!-- Header -->
+    <header class="p-4 flex justify-between items-center border-b border-warm-200 dark:border-gray-700 bg-gradient-to-r from-warm-100 to-white dark:from-dark-bg dark:to-dark-bg">
+        <div class="flex items-center">
+            <div class="logo-container flex items-center">
+                <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-md flex items-center justify-center mr-2 shadow-lg">
+                    <span class="logo-text text-white font-bold text-xl">X</span>
+                </div>
+                <h1 class="logo-text text-xl md:text-2xl font-bold text-primary">CHEAT X</h1>
+            </div>
+        </div>
+        <button id="menuButton" class="text-2xl text-primary hover:text-primary-dark transition-colors">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Menu Overlay -->
+    <div id="menuOverlay" class="menu-overlay fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex">
+        <div class="w-72 bg-light-bg dark:bg-dark-bg h-full shadow-lg p-5">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="logo-text text-xl font-bold gradient-text">CHEAT X</h2>
+                <button id="closeMenu" class="text-xl text-primary hover:text-primary-dark transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav>
+                <ul class="space-y-4">
+                    <li><a href="#" class="block py-3 pl-4 pr-3 hover:bg-warm-200 dark:hover:bg-gray-700 rounded-lg transition-colors hover:text-primary"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a></li>
+                    <li><a href="#" class="block py-3 pl-4 pr-3 hover:bg-warm-200 dark:hover:bg-gray-700 rounded-lg transition-colors hover:text-primary"><i class="fas fa-search mr-3"></i> Research</a></li>
+                    <li><a href="#" class="block py-3 pl-4 pr-3 hover:bg-warm-200 dark:hover:bg-gray-700 rounded-lg transition-colors hover:text-primary"><i class="fas fa-credit-card mr-3"></i> Plans</a></li>
+                    <li><a href="#" class="block py-3 pl-4 pr-3 hover:bg-warm-200 dark:hover:bg-gray-700 rounded-lg transition-colors hover:text-primary"><i class="fas fa-poll mr-3"></i> Results</a></li>
+                    <li><a href="#" class="block py-3 pl-4 pr-3 hover:bg-warm-200 dark:hover:bg-gray-700 rounded-lg transition-colors hover:text-primary"><i class="fas fa-cog mr-3"></i> Settings</a></li>
+                </ul>
+            </nav>
+            <div class="absolute bottom-8 left-0 right-0 px-5">
+                <div class="bg-warm-200 dark:bg-gray-700 p-4 rounded-lg">
+                    <h3 class="font-bold mb-2">Need help?</h3>
+                    <p class="text-sm mb-3">Get in touch with our support team for assistance.</p>
+                    <button class="w-full bg-primary text-white py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors">
+                        Contact Support
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Service Description -->
+        <section class="mb-12 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 logo-text gradient-text">AI-Powered Profile Discovery</h1>
+            <p class="text-lg max-w-3xl mx-auto mb-6 text-gray-600 dark:text-gray-300">
+                CHEAT X uses advanced facial recognition and AI OCR technology to find matching profiles and content 
+                across multiple platforms including Facebook, Instagram, OnlyFans, Fanvue, Snapchat, Twitter, and more.
+                Our unique approach delivers results with 97% accuracy.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 mb-4">
+                <div class="feature-badge bg-warm-200 dark:bg-gray-700 px-4 py-2 rounded-full text-sm font-medium">
+                    <i class="fas fa-check-circle text-primary mr-2"></i>Social Media Profiles
+                </div>
+                <div class="feature-badge bg-warm-200 dark:bg-gray-700 px-4 py-2 rounded-full text-sm font-medium">
+                    <i class="fas fa-check-circle text-primary mr-2"></i>Dating App Profiles
+                </div>
+                <div class="feature-badge bg-warm-200 dark:bg-gray-700 px-4 py-2 rounded-full text-sm font-medium">
+                    <i class="fas fa-check-circle text-primary mr-2"></i>Private Content
+                </div>
+                <div class="feature-badge bg-warm-200 dark:bg-gray-700 px-4 py-2 rounded-full text-sm font-medium">
+                    <i class="fas fa-check-circle text-primary mr-2"></i>97% Accuracy
+                </div>
+            </div>
+            <div class="w-full max-w-xl mx-auto h-1 bg-gradient-to-r from-primary via-secondary to-primary rounded-full"></div>
+        </section>
+        
+        <h2 class="text-center text-2xl md:text-3xl font-bold mb-8 logo-text">Upload a picture to start searching</h2>
+        
+        <!-- Upload Section -->
+        <div class="upload-section mb-10">
+            <div id="dropArea" class="border-2 border-dashed border-warm-400 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors relative overflow-hidden">
+                <div id="uploadPrompt" class="relative z-10">
+                    <div class="w-16 h-16 bg-warm-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-primary"></i>
+                    </div>
+                    <p class="text-lg mb-2 font-medium">Drag & drop your files here or click to browse</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Supported formats: JPG, PNG, MP4 (Max 20MB)</p>
+                    <button class="bg-primary text-white py-2 px-6 rounded-lg font-medium hover:bg-primary-dark transition-colors inline-flex items-center">
+                        <i class="fas fa-image mr-2"></i> Choose File
+                    </button>
+                </div>
+                
+                <div id="uploadPreview" class="upload-preview absolute inset-0 flex items-center justify-center bg-light-bg dark:bg-dark-bg z-0">
+                    <img id="previewImage" src="" alt="Preview" class="max-w-full max-h-full object-contain">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <button id="changeImageBtn" class="bg-primary text-white py-2 px-4 rounded-lg opacity-0 hover:opacity-100 transition-opacity">
+                            <i class="fas fa-edit mr-2"></i> Change Image
+                        </button>
+                    </div>
+                </div>
+                
+                <input type="file" id="fileInput" class="hidden" accept="image/*, video/*">
+            </div>
+            
+            <div id="uploadDetails" class="mt-4 hidden">
+                <div class="bg-warm-100 dark:bg-gray-800 p-4 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-file-image text-primary mr-3 text-xl"></i>
+                        <div>
+                            <p id="fileName" class="font-medium">image.jpg</p>
+                            <p id="fileSize" class="text-sm text-gray-500 dark:text-gray-400">2.4 MB</p>
+                        </div>
+                    </div>
+                    <button id="removeFileBtn" class="text-red-500 hover:text-red-700 transition-colors">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mb-12">
+            <button id="findButton" class="bg-gradient-to-r from-primary to-secondary text-white py-3 px-10 rounded-lg text-lg font-bold hover:opacity-90 transition-opacity shadow-lg relative overflow-hidden rotating-border">
+                <span class="relative z-10 flex items-center justify-center">
+                    <i class="fas fa-search mr-3"></i> Find It
+                </span>
+            </button>
+        </div>
+       
+
+        <!-- Progress Section (Hidden by default) -->
+        <div id="progressSection" class="progress-section mb-12 hidden fadeIn">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-glass">
+                <h3 class="text-xl font-bold mb-6 text-center logo-text">Search in Progress</h3>
+                
+                <!-- Overall Progress -->
+                <div class="mb-8">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-medium">Overall Progress</span>
+                        <span id="overallProgressPercent" class="font-bold text-primary">0%</span>
+                    </div>
+                    <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                        <div id="overallProgressBar" class="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-300 relative">
+                            <div class="absolute inset-0 bg-white dark:bg-gray-200 bg-opacity-30 dark:bg-opacity-10 bg-shimmer"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Individual Platform Progress -->
+                <div class="space-y-5">
+                    <div class="platform-progress">
+                        <div class="flex justify-between mb-2">
+                            <span class="flex items-center"><i class="fab fa-facebook text-blue-500 mr-2"></i> Social Media Search</span>
+                            <span id="socialMediaResults" class="font-medium">Searching...</span>
+                        </div>
+                        <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                            <div id="socialMediaProgressBar" class="h-full bg-blue-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="platform-progress">
+                        <div class="flex justify-between mb-2">
+                            <span class="flex items-center"><i class="fas fa-star text-pink-500 mr-2"></i> OnlyFan/Fanvue Search</span>
+                            <span id="onlyfanResults" class="font-medium">Searching...</span>
+                        </div>
+                        <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                            <div id="onlyfanProgressBar" class="h-full bg-pink-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="platform-progress">
+                        <div class="flex justify-between mb-2">
+                            <span class="flex items-center"><i class="fas fa-fire text-red-500 mr-2"></i> Tinder Search</span>
+                            <span id="tinderResults" class="font-medium">Searching...</span>
+                        </div>
+                        <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                            <div id="tinderProgressBar" class="h-full bg-red-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="platform-progress">
+                        <div class="flex justify-between mb-2">
+                            <span class="flex items-center"><i class="fas fa-globe text-green-500 mr-2"></i> Web Search</span>
+                            <span id="webResults" class="font-medium">Searching...</span>
+                        </div>
+                        <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                            <div id="webProgressBar" class="h-full bg-green-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                    <p>Searching across multiple platforms. This may take a few minutes.</p>
+                    <p class="mt-1">Our AI is analyzing possible matches and filtering results for accuracy.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section (Hidden by default) -->
+        <div id="resultsSection" class="results-section hidden fadeIn">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-glass mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold logo-text">Search Results</h3>
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fas fa-check-circle mr-1"></i> 8 Results Found
+                    </span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Result Cards -->
+                    <div class="result-card bg-warm-100 dark:bg-gray-700 rounded-lg overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-all duration-300" onclick="showPlans()">
+                        <div class="h-56 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                <img src="https://picsum.photos/400/300" alt="Social profile" class="blur-image w-full h-full object-cover">
+                            </div>
+                            <div class="absolute top-3 right-3 bg-blue-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                                <i class="fab fa-facebook mr-1"></i> Facebook
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-lg">Profile Discovered</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">2 linked profiles found with 94% match accuracy</p>
+                            <div class="flex justify-between items-center mt-3">
+                                <span class="text-xs bg-warm-200 dark:bg-gray-600 px-2 py-1 rounded">Last Updated: Today</span>
+                                <button class="text-primary hover:text-primary-dark">
+                                    <i class="fas fa-unlock-alt mr-1"></i> Unlock
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card bg-warm-100 dark:bg-gray-700 rounded-lg overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-all duration-300" onclick="showPlans()">
+                        <div class="h-56 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                <img src="https://picsum.photos/401/301" alt="Dating profile" class="blur-image w-full h-full object-cover">
+                            </div>
+                            <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                                <i class="fas fa-fire mr-1"></i> Tinder
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-lg">Active Dating Profile</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Last active: 2 days ago (98% match)</p>
+                            <div class="flex justify-between items-center mt-3">
+                                <span class="text-xs bg-warm-200 dark:bg-gray-600 px-2 py-1 rounded">Location Available</span>
+                                <button class="text-primary hover:text-primary-dark">
+                                    <i class="fas fa-unlock-alt mr-1"></i> Unlock
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card bg-warm-100 dark:bg-gray-700 rounded-lg overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-all duration-300" onclick="showPlans()">
+                        <div class="h-56 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                <img src="https://picsum.photos/402/302" alt="Web image" class="blur-image w-full h-full object-cover">
+                            </div>
+                            <div class="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                                <i class="fas fa-globe mr-1"></i> Web
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-lg">Web Images & Content</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">5 images found (92-97% match)</p>
+                            <div class="flex justify-between items-center mt-3">
+                                <span class="text-xs bg-warm-200 dark:bg-gray-600 px-2 py-1 rounded">Multiple Sources</span>
+                                <button class="text-primary hover:text-primary-dark">
+                                    <i class="fas fa-unlock-alt mr-1"></i> Unlock
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card bg-warm-100 dark:bg-gray-700 rounded-lg overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-all duration-300" onclick="showPlans()">
+                        <div class="h-56 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                <img src="https://picsum.photos/403/303" alt="Private content" class="blur-image w-full h-full object-cover">
+                            </div>
+                            <div class="absolute top-3 right-3 bg-pink-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                                <i class="fas fa-star mr-1"></i> Premium
+                            </div>
+                            <div class="absolute top-3 left-3 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
+                                <i class="fas fa-crown"></i> VIP
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-lg">Premium Content</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Private account found (99% match)</p>
+                            <div class="flex justify-between items-center mt-3">
+                                <span class="text-xs bg-warm-200 dark:bg-gray-600 px-2 py-1 rounded">Exclusive Content</span>
+                                <button class="text-primary hover:text-primary-dark">
+                                    <i class="fas fa-unlock-alt mr-1"></i> Unlock
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button onclick="showPlans()" class="bg-gradient-to-r from-primary to-secondary text-white py-3 px-8 rounded-lg font-bold hover:opacity-90 transition-opacity shadow-lg pulse">
+                        <i class="fas fa-lock-open mr-2"></i> Unlock All Results
+                    </button>
+                    <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">Access to all 8 results with full contact information</p>
+                </div>
+            </div>
+            
+            <!-- Testimonials -->
+            <div class="mb-12">
+                <h3 class="text-xl font-bold mb-6 text-center logo-text">What Our Users Say</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-glass">
+                        <div class="flex items-center mb-3">
+                            <div class="text-yellow-400 text-lg">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="ml-2 font-bold">5.0</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">"I was shocked at how quickly I found information I had been looking for months. The accuracy was incredible."</p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-warm-300 rounded-full flex items-center justify-center mr-3">
+                                <span class="text-primary font-bold">JD</span>
+                            </div>
+                            <div>
+                                <p class="font-bold">John D.</p>
+                                <p class="text-xs text-gray-500">Verified User</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-glass">
+                        <div class="flex items-center mb-3">
+                            <div class="text-yellow-400 text-lg">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="ml-2 font-bold">4.5</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">"Found my ex's secret profiles in minutes. Worth every penny for the peace of mind alone."</p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-warm-300 rounded-full flex items-center justify-center mr-3">
+                                <span class="text-primary font-bold">SM</span>
+                            </div>
+                            <div>
+                                <p class="font-bold">Sarah M.</p>
+                                <p class="text-xs text-gray-500">Verified User</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-glass">
+                        <div class="flex items-center mb-3">
+                            <div class="text-yellow-400 text-lg">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="ml-2 font-bold">5.0</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">"The Pro plan is definitely worth it. Found tons of accounts that I never would have discovered otherwise."</p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-warm-300 rounded-full flex items-center justify-center mr-3">
+                                <span class="text-primary font-bold">RJ</span>
+                            </div>
+                            <div>
+                                <p class="font-bold">Robert J.</p>
+                                <p class="text-xs text-gray-500">Pro Member</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <section class="mb-12">
+            <h3 class="text-xl font-bold mb-6 text-center logo-text">Frequently Asked Questions</h3>
+            
+            <div class="space-y-4">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-glass overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-medium flex justify-between items-center">
+                        <span>How accurate are the search results?</span>
+                        <i class="fas fa-chevron-down text-primary transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 border-t border-warm-200 dark:border-gray-700 hidden">
+                        <p class="text-gray-600 dark:text-gray-300">Our AI-powered facial recognition technology delivers results with 97% accuracy. We use multiple verification methods to ensure you're getting reliable matches across all platforms.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-glass overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-medium flex justify-between items-center">
+                        <span>What information do I receive in search results?</span>
+                        <i class="fas fa-chevron-down text-primary transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 border-t border-warm-200 dark:border-gray-700 hidden">
+                        <p class="text-gray-600 dark:text-gray-300">Search results include links to profiles, images, videos, and other content matches across social media platforms, dating apps, and websites. Pro plans provide access to private content and more detailed information.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-glass overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-medium flex justify-between items-center">
+                        <span>How do I pay for a plan?</span>
+                        <i class="fas fa-chevron-down text-primary transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 border-t border-warm-200 dark:border-gray-700 hidden">
+                        <p class="text-gray-600 dark:text-gray-300">We accept Bitcoin for all payments, providing complete anonymity and security for our users. After selecting a plan, you'll receive a unique Bitcoin address for payment.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-glass overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-medium flex justify-between items-center">
+                        <span>How long does a search take?</span>
+                        <i class="fas fa-chevron-down text-primary transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-6 py-4 border-t border-warm-200 dark:border-gray-700 hidden">
+                        <p class="text-gray-600 dark:text-gray-300">Most searches complete within 2-5 minutes, depending on the complexity and number of results found. Our system searches millions of profiles and images to find the most accurate matches.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Plans Modal (Hidden by default) -->
+    <div id="plansModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden fadeIn">
+        <div class="bg-light-bg dark:bg-dark-bg rounded-xl p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto relative">
+            <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-t-xl"></div>
+            
+            <div class="relative z-10">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold logo-text gradient-text">Unlock Full Access</h3>
+                    <button onclick="closePlans()" class="text-xl hover:text-primary transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <p class="text-center mb-8 text-gray-600 dark:text-gray-300">Choose a plan to access detailed information and unlock all search results</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div class="plan-card border border-gray-200 dark:border-gray-700 rounded-xl p-6 flex flex-col relative overflow-hidden bg-white dark:bg-gray-800 shadow-glass">
+                        <div class="absolute top-0 right-0 left-0 h-2 bg-primary"></div>
+                        <h4 class="text-xl font-bold mb-2">Basic Plan</h4>
+                        <div class="text-3xl font-bold mb-2 text-primary">$688</div>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Perfect for one-time searches</p>
+                        <ul class="mb-6 flex-grow space-y-3 text-gray-600 dark:text-gray-300">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                <span>50 searches</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                <span>Basic profile information</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                <span>Social media profiles</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                <span>Dating profiles</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                <span class="text-gray-400 dark:text-gray-500">Private content access</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                <span class="text-gray-400 dark:text-gray-500">Unlimited searches</span>
+                            </li>
+                        </ul>
+                        <button class="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-primary-dark transition-colors">
+                            Buy Now
+                        </button>
+                    </div>
+                    
+                    <div class="plan-card border-2 border-primary rounded-xl p-6 flex flex-col relative overflow-hidden bg-white dark:bg-gray-800 shadow-glass">
+                        <div class="absolute top-0 right-0 left-0 h-2 bg-gradient-to-r from-primary to-secondary"></div>
+                        <div class="absolute -right-12 -top-3 bg-gradient-to-r from-primary to-secondary text-white px-12 py-1 rotate-45 text-sm font-bold">
+                            BEST VALUE
+                        </div>
+                        <h4 class="text-xl font-bold mb-2">Pro Plan</h4>
+                        <div class="text-3xl font-bold mb-2 text-primary">$988</div>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Full access to all features</p>
+                        <ul class="mb-6 flex-grow space-y-3 text-gray-600 dark:text-gray-300">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                <span><b>Unlimited</b> searches</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                <span>Comprehensive profile information</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                <span>All social media profiles</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                <span>Dating app profiles with activity status</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                <span><b>Private content access</b></span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                <span>All features unlocked</span>
+                            </li>
+                        </ul>
+                        <button class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-lg font-bold hover:opacity-90 transition-opacity shadow-md">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="text-center bg-warm-100 dark:bg-gray-700 p-5 rounded-xl">
+                    <p class="text-lg mb-3 font-medium">Bitcoin Accepted</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">For complete anonymity and security, all transactions are processed via Bitcoin</p>
+                    <button class="bg-yellow-500 text-white py-3 px-8 rounded-lg font-bold hover:bg-yellow-600 transition-colors shadow-md flex items-center justify-center mx-auto">
+                        <i class="fab fa-bitcoin mr-3 text-xl"></i> Pay Now
+                    </button>
+                </div>
+                
+                <div class="mt-6 text-center text-sm text-gray-500">
+                    <p>Need help? <a href="#" class="text-primary hover:underline">Contact our support team</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-10 border-t border-warm-200 dark:border-gray-700 bg-gradient-to-r from-warm-100 to-white dark:from-dark-bg dark:to-dark-bg">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div class="logo-container flex items-center mb-4 md:mb-0">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-md flex items-center justify-center mr-2 shadow-lg">
+                        <span class="logo-text text-white font-bold text-xl">X</span>
+                    </div>
+                    <h1 class="logo-text text-xl font-bold text-primary">CHEAT X</h1>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 bg-warm-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-warm-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-warm-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                        <i class="fab fa-bitcoin"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <p class="text-gray-500 dark:text-gray-400 text-sm mb-1">© 2025 CHEAT X </p>
+                <p class="text-gray-400 dark:text-gray-500 text-xs"></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Menu toggle
+        const menuButton = document.getElementById('menuButton');
+        const closeMenu = document.getElementById('closeMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        
+        menuButton.addEventListener('click', () => {
+            menuOverlay.classList.add('show');
+        });
+        
+        closeMenu.addEventListener('click', () => {
+            menuOverlay.classList.remove('show');
+        });
+        
+        // FAQ toggles
+        document.querySelectorAll('.faq-toggle').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const content = toggle.nextElementSibling;
+                const icon = toggle.querySelector('i');
+                
+                if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    content.classList.add('hidden');
+                    icon.style.transform = 'rotate(0)';
+                }
+            });
+        });
+        
+        // File upload handling
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadPreview = document.getElementById('uploadPreview');
+        const previewImage = document.getElementById('previewImage');
+        const uploadPrompt = document.getElementById('uploadPrompt');
+        const uploadDetails = document.getElementById('uploadDetails');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const removeFileBtn = document.getElementById('removeFileBtn');
+        const changeImageBtn = document.getElementById('changeImageBtn');
+        
+        dropArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        changeImageBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+        
+        removeFileBtn.addEventListener('click', () => {
+            resetUpload();
+        });
+        
+        fileInput.addEventListener('change', handleFiles);
+        
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('upload-active');
+        });
+        
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('upload-active');
+        });
+        
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('upload-active');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFiles();
+            }
+        });
+        
+        function handleFiles() {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        uploadPreview.classList.add('show');
+                        uploadPrompt.style.opacity = '0';
+                        
+                        // Update file details
+                        fileName.textContent = file.name;
+                        fileSize.textContent = formatFileSize(file.size);
+                        uploadDetails.classList.remove('hidden');
+                        
+                        // Add upload complete styling
+                        dropArea.classList.add('border-primary');
+                    };
+                    
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please upload an image file.');
+                    resetUpload();
+                }
+            }
+        }
+        
+        function resetUpload() {
+            fileInput.value = '';
+            uploadPreview.classList.remove('show');
+            uploadPrompt.style.opacity = '1';
+            uploadDetails.classList.add('hidden');
+            dropArea.classList.remove('border-primary');
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' bytes';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            else return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+        
+        // Find button functionality
+        const findButton = document.getElementById('findButton');
+        const progressSection = document.getElementById('progressSection');
+        const resultsSection = document.getElementById('resultsSection');
+        
+        findButton.addEventListener('click', startSearch);
+        
+        function startSearch() {
+            if (fileInput.files.length === 0) {
+                alert('Please upload at least one image first.');
+                return;
+            }
+            
+            // Scroll to progress section
+            progressSection.classList.remove('hidden');
+            setTimeout(() => {
+                progressSection.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+            
+            findButton.disabled = true;
+            findButton.classList.add('opacity-50');
+            
+            // Reset progress
+            const overallProgressBar = document.getElementById('overallProgressBar');
+            const overallProgressPercent = document.getElementById('overallProgressPercent');
+            const socialMediaProgressBar = document.getElementById('socialMediaProgressBar');
+            const onlyfanProgressBar = document.getElementById('onlyfanProgressBar');
+            const tinderProgressBar = document.getElementById('tinderProgressBar');
+            const webProgressBar = document.getElementById('webProgressBar');
+            
+            overallProgressBar.style.width = '0%';
+            socialMediaProgressBar.style.width = '0%';
+            onlyfanProgressBar.style.width = '0%';
+            tinderProgressBar.style.width = '0%';
+            webProgressBar.style.width = '0%';
+            
+            // Simulate progress
+            setTimeout(() => {
+                socialMediaProgressBar.style.width = '100%';
+                document.getElementById('socialMediaResults').textContent = '2 profiles found';
+                updateOverallProgress(25);
+            }, 1000);
+            
+            setTimeout(() => {
+                onlyfanProgressBar.style.width = '100%';
+                document.getElementById('onlyfanResults').textContent = '0 found';
+                updateOverallProgress(50);
+            }, 2000);
+            
+            setTimeout(() => {
+                tinderProgressBar.style.width = '100%';
+                document.getElementById('tinderResults').textContent = '1 active account found';
+                updateOverallProgress(75);
+            }, 3000);
+            
+            setTimeout(() => {
+                webProgressBar.style.width = '100%';
+                document.getElementById('webResults').textContent = '5 pictures found';
+                updateOverallProgress(100);
+            }, 4000);
+            
+            setTimeout(() => {
+                showResults();
+            }, 5000);
+        }
+        
+        function updateOverallProgress(percent) {
+            const overallProgressBar = document.getElementById('overallProgressBar');
+            const overallProgressPercent = document.getElementById('overallProgressPercent');
+            
+            overallProgressBar.style.width = `${percent}%`;
+            overallProgressPercent.textContent = `${percent}%`;
+        }
+        
+        function showResults() {
+            progressSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            setTimeout(() => {
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+            findButton.disabled = false;
+            findButton.classList.remove('opacity-50');
+        }
+        
+        // Plans modal
+        function showPlans() {
+            document.getElementById('plansModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closePlans() {
+            document.getElementById('plansModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
